@@ -3,7 +3,7 @@ EasyShells
 
 Shell Modeling Modules for Salome
 
-Copyright (C) 2013  Stefan Reiterer - stefan.reiterer@magnasteyr.com
+Copyright (C) 2013  Stefan Reiterer - stefan.reiterer@magnasteyr.com or maldun.finsterschreck@gmail.com
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
