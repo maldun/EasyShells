@@ -1,7 +1,7 @@
 # EasyShells Module - API for easier Shell Model Construction in Salome
-# __init__.py: init file for Shell module
+# __init__.py: init file for EasyShells  module
 #
-# Copyright (C) year  Stefan Reiterer - stefan.reiterer@magnasteyr.com
+# Copyright (C) 2013  Stefan Reiterer - stefan.reiterer@magnasteyr.com
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
