@@ -25,7 +25,18 @@ from numpy import array, arange
 
 from MyGeom.Types import *
 
-def parallelMidsurface(lower_face, upper_face,lower_deg = 2 upper_deg = 5):
+def create_parallel_midpoints(points_lower, points_upper):
+    """
+    Help function to create the midpoints of two given parallel surfaces
+    """
+    length_u = len(points_lower[0])
+    length_v = len(points_lower)
+
+    return [[(points_lower[i][j] + points_upper[i][j])*0.5 \
+              for j in range(length_u)] \
+                for i in range(length_v)]
+
+def parallel_midsurface(lower_face, upper_face, lower_deg = 2, upper_deg = 5):
     """
     Determines the midsurface of 2 parallel
     surfaces. Hereby parallel means that they
@@ -33,18 +44,10 @@ def parallelMidsurface(lower_face, upper_face,lower_deg = 2 upper_deg = 5):
     that both normals point outwards.
     """
 
-    
-    #inverse = geompy.ChangeOrientation(lower_face)
-    #normal = geompy.GetNormal(inverse)
-    parameter_space = arange(0,1,1.0/upper_deg)
-    point_creation = geompy.MakeVertexOnSurface # (arc_face, 0.5, 0.5)
-    # create local coordinate systems
-    points_lower = [point_creation(lower_face,u,v) \
-                        for u in parameter_space for v in parameter_space]
-    points_lower = [MyVertex(p) for p in points_lower] # Transform to MyGeom
-    points_upper = [point_creation(upper_face,u,v) \
-                        for u in parameter_space for v in parameter_space]
-    points_lower = [MyVertex(p) for p in points_upper] # Transform to MyGeom
-    
-    # create midpoints
-    [MyVertex((points_lower[i].getCoord() + points_upper[i].getCoord())/2.) for i in range(len(points_lower))]
+    points_u = arange(0,1+1./upper_deg,1./upper_deg)
+    points_v = points_u
+
+    lower_points = create_local_coordinates(lower_face,points_u,points_v)  
+    lower_points = create_local_coordinates(upper_face,points_u,points_v)
+
+    midpoints = create_parallel_midpoints
