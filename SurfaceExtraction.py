@@ -1,5 +1,5 @@
 # EasyShells Module - API for easier Shell Model Construction in Salome
-# __init__.py: init file for EasyShells  module
+# SurfaceExtraction.py : init file for EasyShells  module
 #
 # Copyright (C) 2013  Stefan Reiterer - stefan.reiterer@magnasteyr.com or maldun.finsterschreck@gmail.com
 #
@@ -16,6 +16,3 @@
 # You should have received a copy of the GNU Lesser General Public
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
-
-
-__all__=["MidSurface","SurfaceExtraction"]
