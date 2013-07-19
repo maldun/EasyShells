@@ -1,5 +1,5 @@
 # EasyShells Module - API for easier Shell Model Construction in Salome
-# SurfaceExtraction.py : init file for EasyShells  module
+# SurfaceExtraction.py : Module for extraction groups of certain faces
 #
 # Copyright (C) 2013  Stefan Reiterer - stefan.reiterer@magnasteyr.com or maldun.finsterschreck@gmail.com
 #
@@ -16,3 +16,11 @@
 # You should have received a copy of the GNU Lesser General Public
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+
+def get_inner_side_of_face_list(faces):
+    """
+    Takes a list of faces and return the faces which lie on the
+    inner side. E.g. pipes or tanks etc. 
+    """
+
+    pass
