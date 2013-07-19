@@ -17,9 +17,9 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
-def get_inner_side_of_face_list(faces):
+def get_inner_side_of_shell(shell):
     """
-    Takes a list of faces and return the faces which lie on the
+    Takes a closed shell of faces and return the faces which lie on the
     inner side. E.g. pipes or tanks etc. 
     """
 
