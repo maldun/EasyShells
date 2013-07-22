@@ -17,6 +17,33 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
+from MyGeom.Tools import inner_product, explode_sub_shape
+
+def check_turned_away_face_from_plane(face,plane_normal,local_sys = None):
+    """
+    Definition: A face is called turned away from a plane
+               iff <n_p,n_f(x)> > 0 for all x in
+               the face, where n_p is the normal
+               of the plane, and n_f(x) the normal of
+               the face in a point x
+    """
+    if local_sys is None:
+        if inner_product(face.getNormal(),plane_normal) > 0.0:
+            return True
+        else:
+            return False
+    else:
+        raise NotImplementedError("Error: More Precise checks are not implemented yet!")
+
+def get_turned_away_shell_faces_from_plane(shell,plane):
+
+    plane_normal = plane.getNormal()
+
+    faces = explode_sub_shape(shell,"FACE",add_to_study = False)
+    turned_away = [face for face in faces if check_turned_away_face_from_plane(face,plane_normal)]
+
+    return turned_away
+
 def get_inner_side_of_shell(shell):
     """
     Takes a closed shell of faces and return the faces which lie on the
