@@ -17,6 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
+from MyGeom.Types import *
 from MyGeom.Tools import inner_product, explode_sub_shape
 
 def check_turned_away_face_from_plane(face,plane_normal,local_sys = None):
@@ -35,11 +36,15 @@ def check_turned_away_face_from_plane(face,plane_normal,local_sys = None):
     else:
         raise NotImplementedError("Error: More Precise checks are not implemented yet!")
 
-def get_turned_away_shell_faces_from_plane(shell,plane):
+def get_turned_away_shell_faces_from_plane(shell,plane,to_face = False):
 
-    plane_normal = plane.getNormal()
+    if to_face: # If the faces look into the direction of the plane
+        plane_normal = (plane.changeOrientation(make_copy = True)).getNormal()
+    else:
+        plane_normal = plane.getNormal()
 
     faces = explode_sub_shape(shell,"FACE",add_to_study = False)
+    faces = [MyFace(face) for face in faces]
     turned_away = [face for face in faces if check_turned_away_face_from_plane(face,plane_normal)]
 
     return turned_away
