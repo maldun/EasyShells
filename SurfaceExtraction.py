@@ -20,7 +20,7 @@
 from MyGeom.Types import *
 from MyGeom.Tools import inner_product, explode_sub_shape
 
-def check_turned_away_face_from_plane(face,plane_normal,local_sys = None):
+def check_turned_away_face_from_plane(face,plane_normal,sign = 1.0, local_sys = None):
     """
     Definition: A face is called turned away from a plane
                iff <n_p,n_f(x)> > 0 for all x in
@@ -29,7 +29,7 @@ def check_turned_away_face_from_plane(face,plane_normal,local_sys = None):
                the face in a point x
     """
     if local_sys is None:
-        if inner_product(face.getNormal(),plane_normal) > 0.0:
+        if sign*inner_product(face.getNormal(),plane_normal) >= 0.0:
             return True
         else:
             return False
@@ -39,14 +39,16 @@ def check_turned_away_face_from_plane(face,plane_normal,local_sys = None):
 def get_turned_away_shell_faces_from_plane(shell,plane,to_face = False):
 
     if to_face: # If the faces look into the direction of the plane
-        plane_normal = (plane.changeOrientation(make_copy = True)).getNormal()
+        sign = -1.0
     else:
-        plane_normal = plane.getNormal()
+        sign = 1.0
+    
+    plane_normal = plane.getNormal()
 
     faces = explode_sub_shape(shell,"FACE",add_to_study = False)
     faces = [MyFace(face) for face in faces]
-    turned_away = [face for face in faces if check_turned_away_face_from_plane(face,plane_normal)]
-
+    turned_away = [face for face in faces if check_turned_away_face_from_plane(face,plane_normal,sign = sign)]
+    
     return turned_away
 
 def get_inner_side_of_shell(shell):
