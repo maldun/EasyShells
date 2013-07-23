@@ -20,23 +20,32 @@
 from MyGeom.Types import *
 from MyGeom.Tools import inner_product, explode_sub_shape
 
-def check_turned_away_face_from_plane(face,plane_normal,sign = 1.0, local_sys = None):
+def check_turned_away_face_from_plane(face,plane_normal,sign = 1.0, local_sys = None, strict = False):
     """
     Definition: A face is called turned away from a plane
-               iff <n_p,n_f(x)> > 0 for all x in
+               iff <n_p,n_f(x)> >= 0 for all x in
                the face, where n_p is the normal
                of the plane, and n_f(x) the normal of
-               the face in a point x
+               the face in a point x.
+               Analogously: A face is called strictly
+               turned away iff <n_p,n_f(x)> > 0 for
+               all x in the face.
     """
     if local_sys is None:
-        if sign*inner_product(face.getNormal(),plane_normal) >= 0.0:
-            return True
+        if strict:
+            if sign*inner_product(face.getNormal(),plane_normal) > 0.0:
+                return True
+            else:
+                return False
         else:
-            return False
+            if sign*inner_product(face.getNormal(),plane_normal) >= 0.0:
+                return True
+            else:
+                return False
     else:
         raise NotImplementedError("Error: More Precise checks are not implemented yet!")
 
-def get_turned_away_shell_faces_from_plane(shell,plane,to_face = False):
+def get_turned_away_shell_faces_from_plane(shell,plane,to_face = False, strict = False):
 
     if to_face: # If the faces look into the direction of the plane
         sign = -1.0
@@ -47,7 +56,8 @@ def get_turned_away_shell_faces_from_plane(shell,plane,to_face = False):
 
     faces = explode_sub_shape(shell,"FACE",add_to_study = False)
     faces = [MyFace(face) for face in faces]
-    turned_away = [face for face in faces if check_turned_away_face_from_plane(face,plane_normal,sign = sign)]
+    turned_away = [face for face in faces \
+                       if check_turned_away_face_from_plane(face,plane_normal,sign = sign, strict = strict)]
     
     return turned_away
 
