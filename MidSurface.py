@@ -51,3 +51,15 @@ def parallel_midsurface(lower_face, upper_face, lower_deg = 2, upper_deg = 5):
     lower_points = create_local_coordinates(upper_face,points_u,points_v)
 
     midpoints = create_parallel_midpoints
+
+def face_normal_translation(face,distance,change_orientation = False):
+    """
+    Help function to make a translation
+    """
+    if change_orientation:
+        face.changeOrientation()
+    
+    normal = face.getNormal()
+    result = geompy.MakeTranslationVectorDistance(face.getGeomObject(),normal.getGeomObject(),
+                                                  distance)
+    return MyFace(result)
