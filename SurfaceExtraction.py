@@ -165,26 +165,7 @@ def get_inner_side_of_shell_with_radius(shell, inner_face, radius, border_faces 
     while True:
         
         filtered_face_list, face_list = filter_list_by_radius(marked[-1],face_list,radius)
-        while True:
-            marked_face = marked.pop()
-            # get neigbour indices
-            indices = [i for i in range(len(face_list)) \
-                       if check_neighbour(marked_face,filtered_face_list[i]) is True]
-        
-
-            # filter out new_neighbours
-            new_neighbours = [filtered_face_list[i] for i in indices ]
-            for i in indices:
-                filtered_face_list[i] = None
-
-                marked += new_neighbours
-                done += [marked_face]
-
-                print(" Length marked: ", len(marked), " Length done: ", len(done))
-                print(counter)
-                counter += 1
-                if marked == []:
-                    break
+        done += get_inner_side_of_shell(marked[-1],filtered_face_list)
 
         for done_face in done:
             for face in face_list:
