@@ -18,7 +18,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 from MyGeom.Types import *
-from MyGeom.Tools import inner_product, explode_sub_shape
+from MyGeom.Tools import *
 
 def check_turned_away_face_from_plane(face,plane_normal,sign = 1.0, local_sys = None, strict = False):
     """
@@ -61,10 +61,67 @@ def get_turned_away_shell_faces_from_plane(shell,plane,to_face = False, strict =
     
     return turned_away
 
-def get_inner_side_of_shell(shell):
+def check_neighbour(face1,face2):
+    """
+    checks if two faces are neighbours. If one of the two faces is none also return False
+    """
+    if face1 is None or face2 is None:
+        return False
+    
+    if get_min_distance(face1,face2) == 0.0:
+        if face1 != face2:
+            return True
+
+    return False
+
+def get_inner_side_of_shell(shell, inner_face, border_faces = []):
     """
     Takes a closed shell of faces and return the faces which lie on the
-    inner side. E.g. pipes or tanks etc. 
-    """
+    inner side. E.g. pipes or tanks etc. This Version needs the faces
+    which serves as border, and one face which lies on the inner
 
-    pass
+    Algorithm : We remove all borders from the faces. Then get all neighbours
+                of the inner face. These are marked now and will be removed
+                from the face list. The inner face will then marked as done 
+                Then for each marked face get the neighbours and mark them
+                and then set this face done.
+                This will be done if there are no more faces to mark.
+                
+    """
+    
+    if not border_faces:
+        raise NotImplementedError("Error: Automatic determination of borders is not implemented yet!")
+
+    shell = MyShell(shell)
+    face_list = explode_sub_shape(shell,"FACE",add_to_study = False)
+    face_list = [MyFace(face) for face in face_list]
+    # filter out faces which are not in the border list
+    face_list = [face for face in face_list if not face in border_faces]
+
+    marked = [inner_face]
+    done = []
+    counter = 0
+    while True:
+        
+        marked_face = marked.pop()
+        # get neigbour indices
+        indices = [i for i in range(len(face_list)) \
+                       if check_neighbour(marked_face,face_list[i]) is True]
+        
+
+        # filter out new_neighbours
+        new_neighbours = [face_list[i] for i in indices ]
+        for i in indices:
+            face_list[i] = None
+
+        marked += new_neighbours
+        done += [marked_face]
+
+        print("Length faces: ",len(face_list)," Length marked: ", len(marked), " Length done: ", len(done))
+        print(counter)
+        counter += 1
+        if marked == []:
+            return MyShell(done)
+
+    else:
+        raise 
