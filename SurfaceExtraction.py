@@ -74,7 +74,7 @@ def check_neighbour(face1,face2):
 
     return False
 
-def get_inner_side_of_shell(shell, inner_face, border_faces = []):
+def get_inner_side_of_shell(shell, inner_face, border_faces = [], return_shell = False):
     """
     Takes a closed shell of faces and return the faces which lie on the
     inner side. E.g. pipes or tanks etc. This Version needs the faces
@@ -92,8 +92,13 @@ def get_inner_side_of_shell(shell, inner_face, border_faces = []):
     if not border_faces:
         raise NotImplementedError("Error: Automatic determination of borders is not implemented yet!")
 
-    shell = MyShell(shell)
-    face_list = explode_sub_shape(shell,"FACE",add_to_study = False)
+    if isinstance(shell,list):
+        face_list = list(shell)
+    else:
+        shell = MyShell(shell)
+        face_list = explode_sub_shape(shell,"FACE",add_to_study = False)
+
+    # convert to MyFaces
     face_list = [MyFace(face) for face in face_list]
     # filter out faces which are not in the border list
     face_list = [face for face in face_list if not face in border_faces]
@@ -114,6 +119,8 @@ def get_inner_side_of_shell(shell, inner_face, border_faces = []):
         for i in indices:
             face_list[i] = None
 
+        face_list = [face for face_list if not face is None]
+
         marked += new_neighbours
         done += [marked_face]
 
@@ -121,7 +128,10 @@ def get_inner_side_of_shell(shell, inner_face, border_faces = []):
         print(counter)
         counter += 1
         if marked == []:
-            return MyShell(done)
+            if return_shell:
+                return MyShell(done)
+            else:
+                return done
 
 def filter_list_by_radius(center_face,face_list,radius):
     inner = []
