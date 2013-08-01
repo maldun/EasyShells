@@ -93,7 +93,7 @@ def get_inner_side_of_shell(shell, inner_face, border_faces = [], return_shell =
         raise NotImplementedError("Error: Automatic determination of borders is not implemented yet!")
 
     if isinstance(shell,list):
-        face_list = list(shell)
+        face_list = list(shell) # copy shell
     else:
         shell = MyShell(shell)
         face_list = explode_sub_shape(shell,"FACE",add_to_study = False)
@@ -119,7 +119,7 @@ def get_inner_side_of_shell(shell, inner_face, border_faces = [], return_shell =
         for i in indices:
             face_list[i] = None
 
-        face_list = [face for face_list if not face is None]
+        face_list = [face for face in face_list if not face is None]
 
         marked += new_neighbours
         done += [marked_face]
