@@ -20,6 +20,8 @@
 from MyGeom.Types import *
 from MyGeom.Tools import *
 
+from numpy import abs
+
 def check_turned_away_face_from_plane(face,plane_normal,sign = 1.0, local_sys = None, strict = False):
     """
     Definition: A face is called turned away from a plane
@@ -61,20 +63,20 @@ def get_turned_away_shell_faces_from_plane(shell,plane,to_face = False, strict =
     
     return turned_away
 
-def check_neighbour(face1,face2):
+def check_neighbour(face1,face2,tol = 1e-8):
     """
     checks if two faces are neighbours. If one of the two faces is none also return False
     """
     if face1 is None or face2 is None:
         return False
     
-    if get_min_distance(face1,face2) == 0.0:
+    if abs(get_min_distance(face1,face2)) < tol:
         if face1 != face2:
             return True
 
     return False
 
-def get_inner_side_of_shell(shell, inner_face, border_faces = [], return_shell = False):
+def get_inner_side_of_shell(shell, inner_face, border_faces = [], tol = 1e-8, return_shell = False):
     """
     Takes a closed shell of faces and return the faces which lie on the
     inner side. E.g. pipes or tanks etc. This Version needs the faces
@@ -111,7 +113,7 @@ def get_inner_side_of_shell(shell, inner_face, border_faces = [], return_shell =
         marked_face = marked.pop()
         # get neigbour indices
         indices = [i for i in range(len(face_list)) \
-                       if check_neighbour(marked_face,face_list[i]) is True]
+                       if check_neighbour(marked_face,face_list[i],tol) is True]
         
 
         # filter out new_neighbours
@@ -124,7 +126,7 @@ def get_inner_side_of_shell(shell, inner_face, border_faces = [], return_shell =
         marked += new_neighbours
         done += [marked_face]
 
-        print(" Length marked: ", len(marked), " Length done: ", len(done))
+        print(" Number marked: ", len(marked), " Number done: ", len(done))
         print(counter)
         counter += 1
         if marked == []:
